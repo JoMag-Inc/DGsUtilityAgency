@@ -8,6 +8,9 @@ _a tool for justifying all your bad decisions_
 ## About
 
 DGsUtilityAgency is a terminal-based interactive application built with Textual that helps you make decisions using utility theory. Whether you're trying to justify a purchase or evaluate life choices, this tool guides you through a structured decision-making process by analyzing different life areas, time horizons, and categories of impact.
+After going through the forms, our utility calculator will calculate utilities that will help you make "better" decisions.
+
+DISCLAIMER: This is just a fun tool, and proof of concept. Do not let any utilities or descisions calculated from this Agency, dictate your life.
 
 ## Running the Application
 
