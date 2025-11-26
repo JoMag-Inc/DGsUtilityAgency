@@ -60,11 +60,32 @@ Footer {
 }
 
 #welcome-panel {
-    border: thick $accent;
+    border: thick $secondary;
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold underline;
     background: $surface;
-    padding: 1;
+    padding: 4 8;
     margin: 0;
     height: auto;
+}
+
+#life-areas-panel {
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
+}
+
+#time-category-panel {
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
+}
+
+#results-panel {
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
 }
 
 #welcome-text {
@@ -79,6 +100,8 @@ Container {
 }
 
 Vertical {
+    border-title-color: $accent;
+
     height: auto;
     width: 100%;
 }
@@ -91,6 +114,9 @@ Horizontal {
 /* Input fields */
 Input {
     border: tall $primary;
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
     background: $boost;
     color: white;
     margin: 0 0 1 0;
@@ -118,6 +144,9 @@ Input > .input--placeholder {
 RadioSet {
     background: $panel;
     border: round $primary-darken-2;
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
     padding: 0 1;
     margin: 0 0 1 0;
     height: auto;
@@ -148,6 +177,9 @@ Checkbox:hover {
 
 #life-areas-checkboxes {
     border: round $primary-darken-2;
+    border-title-align: left;
+    border-title-color: $accent;
+    border-title-style: bold;
     background: $panel;
     padding: 0 1;
     margin: 0 0 1 0;
@@ -195,5 +227,55 @@ Static {
 .hint {
     color: $text-muted;
     text-style: italic;
+    height: auto;
+}
+
+/* Results screen styles */
+.result-value {
+    color: $text;
+    text-style: bold;
+    padding: 1 0;
+    height: auto;
+}
+
+.scenario {
+    color: $text;
+    padding: 0 0 1 0;
+    height: auto;
+}
+
+.recommendation {
+    color: $text;
+    padding: 1;
+    background: $boost;
+    border: round $primary;
+    height: auto;
+}
+
+/* Probability analysis styles */
+.probability-input {
+    background: $panel;
+    padding: 1;
+    margin: 0 0 1 0;
+    height: auto;
+}
+
+.probability-input Input {
+    width: 30;
+    min-width: 20;
+}
+
+.expected-utility {
+    color: $text;
+    text-style: bold;
+    padding: 0 0 1 0;
+    height: auto;
+}
+
+.breakeven {
+    color: $accent;
+    text-style: italic;
+    padding: 1 0;
+    border-top: solid $primary-darken-2;
     height: auto;
 }

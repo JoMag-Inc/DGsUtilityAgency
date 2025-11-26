@@ -1,5 +1,5 @@
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal, Vertical
+from textual.containers import Container, Horizontal
 from textual.screen import Screen
 from textual.widgets import Button, Input, RadioButton, RadioSet, Static
 
@@ -7,36 +7,30 @@ from src.forms.life_areas import LifeAreasScreen
 
 
 class WelcomeScreen(Screen):
+    def on_mount(self) -> None:
+        """Set border title when screen is mounted"""
+        self.query_one("#welcome-panel", Container).border_title = (
+            "Welcome to DGs Utility Agency"
+        )
+        self.query_one("#item_name", Input).border_title = "Item name"
+        self.query_one("#price", Input).border_title = "Price (dollars)"
+        self.query_one("#income_level", RadioSet).border_title = "Income Level"
+
     def compose(self) -> ComposeResult:
         with Container(classes="panel", id="welcome-panel"):
-            yield Static(
-                "[bold cyan]╔═══════════════════════════════════════════════════╗[/bold cyan]\n"
-                "[bold cyan]║[/bold cyan]           Welcome to DGs Utility Agency[bold cyan]           ║[/bold cyan]\n"
-                "[bold cyan]╚═══════════════════════════════════════════════════╝[/bold cyan]\n",
-                classes="panel-title",
-            )
-
             yield Static(
                 "This tool helps you make optimal decisions about purchases.\n"
                 "Fill in the information below to get started.",
                 id="welcome-text",
             )
 
-            with Vertical(classes="section"):
-                yield Static("[bold]Item Information[/bold]", classes="section-header")
-                yield Static("What item are you considering?", classes="label")
-                yield Input(placeholder="e.g., Laptop", id="item_name")
+            yield Input(placeholder="e.g., Laptop", id="item_name")
+            yield Input(placeholder="e.g., 1200", id="price")
 
-                yield Static("What is the price (dollars)?", classes="label")
-                yield Input(placeholder="e.g., 1200", id="price")
-
-            with Vertical(classes="section"):
-                yield Static("[bold]Income Level[/bold]", classes="section-header")
-                yield Static("Select your income level:", classes="hint")
-                with RadioSet(id="income_level"):
-                    yield RadioButton("Low", id="low")
-                    yield RadioButton("Medium", id="medium", value=True)  # Default
-                    yield RadioButton("High", id="high")
+            with RadioSet(id="income_level"):
+                yield RadioButton("Low", id="low")
+                yield RadioButton("Medium", id="medium", value=True)  # Default
+                yield RadioButton("High", id="high")
 
             with Horizontal(id="button-group"):
                 yield Button("Continue →", variant="primary", id="continue")
@@ -53,7 +47,7 @@ class WelcomeScreen(Screen):
             # Store in app's data
             self.app.purchase_data = {
                 "item_name": item_name,
-                "price": price,
+                "price": float(price),
                 "income_level": income_level,
             }
 
