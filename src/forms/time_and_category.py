@@ -25,19 +25,28 @@ class TimeAndCategoryScreen(Screen):
                 with Vertical(classes="section"):
                     yield Static("[bold]Usage Time[/bold]", classes="section-header")
                     yield Static(
-                        "How many hours per week will you use this?",
-                        classes="label"
+                        "How many hours per week will you use this?", classes="label"
                     )
-                    yield Input(placeholder="e.g., 2", id="hours_pr_week", type="number")
+                    yield Input(
+                        placeholder="e.g., 2", id="hours_pr_week", type="number"
+                    )
+                    yield Static(
+                        "[bold]How probable do you think it is that you will get to use it as much as you say?[/bold]"
+                    )
+                    with RadioSet(id="use_probability"):
+                        yield RadioButton("Low", id="low")
+                        yield RadioButton("Medium", id="meduim")
+                        yield RadioButton("High", id="high")
 
                     yield Static(
-                        "What is the life span of the item in months?",
-                        classes="label"
+                        "What is the life span of the item in months?", classes="label"
                     )
                     yield Input(placeholder="e.g., 14", id="life_span", type="number")
 
                 with Vertical(classes="section"):
-                    yield Static("[bold]Benefit Category[/bold]", classes="section-header")
+                    yield Static(
+                        "[bold]Benefit Category[/bold]", classes="section-header"
+                    )
                     yield Static("What category does this belong to?", classes="hint")
 
                     with RadioSet(id="category"):
@@ -54,11 +63,15 @@ class TimeAndCategoryScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "continue":
             time_use = self.query_one("#hours_pr_week", Input).value
+            use_probability_radio = self.query_one("#use_probability", RadioSet)
+            use_probability = use_probability_radio.pressed_button.id
             life_span = self.query_one("#life_span", Input).value
+
             category_radio = self.query_one("#category", RadioSet)
             category = category_radio.pressed_button.id
 
             self.app.purchase_data["time_use"] = time_use
+            self.app.purchase_data["use_probability"] = use_probability
             self.app.purchase_data["life_span"] = life_span
             self.app.purchase_data["category"] = category
             self.app.notify(f"All data: {self.app.purchase_data}")

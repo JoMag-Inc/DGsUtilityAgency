@@ -101,14 +101,26 @@ class DGUtilityAgency(App):
     Input {
         border: tall $primary;
         background: $boost;
+        color: white;
         margin: 0 0 1 0;
         width: 100%;
         min-width: 40;
-        height: 1;
+
+        height: 3;
     }
 
     Input:focus {
         border: tall $accent;
+        color: white;
+    }
+
+    Input > .input--cursor {
+        color: white;
+        background: $accent;
+    }
+
+    Input > .input--placeholder {
+        color: $text-muted;
     }
 
     /* Radio buttons and checkboxes */
@@ -201,8 +213,6 @@ class DGUtilityAgency(App):
         Binding("q", "quit", "Quit", priority=True),  # Press 'q' to quit
         Binding("ctrl+c", "quit", "Quit", priority=True),  # Ctrl+C also quits
     ]
-
-    MODES = {}
 
     def compose(self) -> ComposeResult:
         yield Header()
