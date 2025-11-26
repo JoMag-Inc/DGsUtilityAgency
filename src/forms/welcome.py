@@ -27,7 +27,7 @@ class WelcomeScreen(Screen):
                 yield Static("What item are you considering?", classes="label")
                 yield Input(placeholder="e.g., Laptop", id="item_name")
 
-                yield Static("What is the price?", classes="label")
+                yield Static("What is the price (dollars)?", classes="label")
                 yield Input(placeholder="e.g., 1200", id="price")
 
             with Vertical(classes="section"):
