@@ -4,10 +4,11 @@ from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widgets import Button, Input, Static
 
-from calculator import (
+from src.calculator import (
     calculate_breakeven_probability,
     calculate_expected_utility_buy,
     calculate_expected_utility_not_buy,
+    calculate_utilities,
 )
 
 
@@ -18,17 +19,16 @@ class ResultsScreen(Screen):
     p_useful_if_buy = reactive(0.5)
     p_useful_if_not_buy = reactive(0.1)
 
-    def __init__(self, results: dict, purchase_data: dict):
+    def __init__(self, purchase_data: dict):
         super().__init__()
-        self.results = results
-        self.purchase_data = purchase_data
+        self.results = calculate_utilities(purchase_data)
 
     def compose(self) -> ComposeResult:
 
         with Vertical(id="content"):
             with Container(classes="panel", id="results-panel"):
                 yield Static(
-                    "Adjust the probabilities below to see how the recommendation changes.",
+                    "Adjust the probabilities below to see how the recommendation changes.\n",
                     classes="hint",
                 )
 
@@ -66,7 +66,7 @@ class ResultsScreen(Screen):
 
     def on_mount(self) -> None:
         """Initialize the expected utility display when screen loads."""
-        item_name = self.purchase_data.get("item_name", "Unknown Item")
+        item_name = self.app.purchase_data.get("item_name", "Unknown Item")
         self.query_one("#results-panel", Container).border_title = (
             f"Analysis: {item_name}"
         )
@@ -98,8 +98,12 @@ class ResultsScreen(Screen):
     def _update_expected_utilities(self) -> None:
         """Update the expected utility displays."""
         eu_buy = calculate_expected_utility_buy(self.p_useful_if_buy, self.results)
-        eu_not_buy = calculate_expected_utility_not_buy(self.p_useful_if_not_buy, self.results)
-        breakeven = calculate_breakeven_probability(self.results, self.p_useful_if_not_buy)
+        eu_not_buy = calculate_expected_utility_not_buy(
+            self.p_useful_if_not_buy, self.results
+        )
+        breakeven = calculate_breakeven_probability(
+            self.results, self.p_useful_if_not_buy
+        )
 
         eu_buy_widget = self.query_one("#expected_utility_buy", Static)
         if eu_buy > eu_not_buy:
@@ -122,8 +126,12 @@ class ResultsScreen(Screen):
     def _get_recommendation(self) -> str:
         """Generate a recommendation based on the current expected utilities."""
         eu_buy = calculate_expected_utility_buy(self.p_useful_if_buy, self.results)
-        eu_not_buy = calculate_expected_utility_not_buy(self.p_useful_if_not_buy, self.results)
-        breakeven = calculate_breakeven_probability(self.results, self.p_useful_if_not_buy)
+        eu_not_buy = calculate_expected_utility_not_buy(
+            self.p_useful_if_not_buy, self.results
+        )
+        breakeven = calculate_breakeven_probability(
+            self.results, self.p_useful_if_not_buy
+        )
 
         if eu_buy > eu_not_buy:
             confidence = eu_buy - eu_not_buy

@@ -3,7 +3,6 @@ from textual.containers import Container, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Input, RadioButton, RadioSet, Static
 
-from src.calculator.utility_calculator import calculate_utilities
 from src.forms.results import ResultsScreen
 
 
@@ -66,10 +65,9 @@ class TimeAndCategoryScreen(Screen):
             self.app.purchase_data["use_probability"] = use_probability
             self.app.purchase_data["life_span"] = int(life_span)
             self.app.purchase_data["category"] = category
-            results = calculate_utilities(self.app.purchase_data)
 
             # Navigate to results screen
-            self.app.push_screen(ResultsScreen(results, self.app.purchase_data))
+            self.app.push_screen(ResultsScreen(self.app.purchase_data))
 
         elif event.button.id == "back":
             self.app.pop_screen()
