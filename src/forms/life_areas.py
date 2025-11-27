@@ -1,3 +1,4 @@
+from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Checkbox, RadioButton, RadioSet
@@ -16,7 +17,7 @@ class LifeAreasScreen(Screen):
         )
         self.query_one("#necessity", RadioSet).border_title = "Necessity Level"
 
-    def compose(self):
+    def compose(self) -> ComposeResult:
 
         with Vertical(id="content"):
             with Container(classes="panel", id="life-areas-panel"):
