@@ -61,9 +61,41 @@ class TimeAndCategoryScreen(Screen):
             category_radio = self.query_one("#category", RadioSet)
             category = category_radio.pressed_button.id
 
-            self.app.purchase_data["time_use"] = float(time_use)
+            # Validate hours per week
+            if not time_use or len(time_use.strip()) == 0:
+                self.app.notify("Hours per week is required", severity="error")
+                return
+            try:
+                time_use_value = float(time_use)
+                if time_use_value < 0:
+                    self.app.notify("Hours per week cannot be negative", severity="error")
+                    return
+                if time_use_value > 168:
+                    self.app.notify("Hours per week cannot exceed 168 (hours in a week)", severity="error")
+                    return
+            except ValueError:
+                self.app.notify("Hours per week must be a valid number", severity="error")
+                return
+
+            # Validate life span
+            if not life_span or len(life_span.strip()) == 0:
+                self.app.notify("Life span is required", severity="error")
+                return
+            try:
+                life_span_value = int(life_span)
+                if life_span_value <= 0:
+                    self.app.notify("Life span must be greater than 0", severity="error")
+                    return
+                if life_span_value > 600:
+                    self.app.notify("Life span cannot exceed 600 months (50 years)", severity="error")
+                    return
+            except ValueError:
+                self.app.notify("Life span must be a valid whole number", severity="error")
+                return
+
+            self.app.purchase_data["time_use"] = time_use_value
             self.app.purchase_data["use_probability"] = use_probability
-            self.app.purchase_data["life_span"] = int(life_span)
+            self.app.purchase_data["life_span"] = life_span_value
             self.app.purchase_data["category"] = category
 
             # Navigate to results screen

@@ -79,21 +79,29 @@ class ResultsScreen(Screen):
     def on_input_changed(self, event: Input.Changed) -> None:
         """Handle changes to probability inputs."""
         if event.input.id == "p_useful_buy":
+            if not event.value or len(event.value.strip()) == 0:
+                return
             try:
                 value = float(event.value)
                 if 0 <= value <= 1:
                     self.p_useful_if_buy = value
                     self._update_expected_utilities()
+                else:
+                    self.app.notify("Probability must be between 0 and 1", severity="warning")
             except ValueError:
-                pass
+                self.app.notify("Probability must be a valid number", severity="warning")
         elif event.input.id == "p_useful_not_buy":
+            if not event.value or len(event.value.strip()) == 0:
+                return
             try:
                 value = float(event.value)
                 if 0 <= value <= 1:
                     self.p_useful_if_not_buy = value
                     self._update_expected_utilities()
+                else:
+                    self.app.notify("Probability must be between 0 and 1", severity="warning")
             except ValueError:
-                pass
+                self.app.notify("Probability must be a valid number", severity="warning")
 
     def _update_expected_utilities(self) -> None:
         """Update the expected utility displays."""

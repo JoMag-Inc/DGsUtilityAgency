@@ -25,7 +25,7 @@ class WelcomeScreen(Screen):
             )
 
             yield Input(placeholder="e.g., Laptop", id="item_name")
-            yield Input(placeholder="e.g., 1200", id="price")
+            yield Input(placeholder="e.g., 1200", id="price", type="number")
 
             with RadioSet(id="income_level"):
                 yield RadioButton("Low", id="low")
@@ -44,10 +44,31 @@ class WelcomeScreen(Screen):
             income_radio = self.query_one("#income_level", RadioSet)
             income_level = income_radio.pressed_button.id
 
+            # Validate item name
+            if not item_name or len(item_name.strip()) == 0:
+                self.app.notify("Item name is required", severity="error")
+                return
+            if len(item_name) > 100:
+                self.app.notify("Item name must be 100 characters or less", severity="error")
+                return
+
+            # Validate price
+            if not price or len(price.strip()) == 0:
+                self.app.notify("Price is required", severity="error")
+                return
+            try:
+                price_value = float(price)
+                if price_value <= 0:
+                    self.app.notify("Price must be greater than 0", severity="error")
+                    return
+            except ValueError:
+                self.app.notify("Price must be a valid number", severity="error")
+                return
+
             # Store in app's data
             self.app.purchase_data = {
-                "item_name": item_name,
-                "price": float(price),
+                "item_name": item_name.strip(),
+                "price": price_value,
                 "income_level": income_level,
             }
 
