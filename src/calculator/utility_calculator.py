@@ -7,11 +7,7 @@ and calculates various utility metrics to help users make informed purchase deci
 
 from typing import TypedDict
 
-from .constants import (
-    CATEGORY_MULTIPLIERS,
-    LIFE_AREA_WEIGHTS,
-    NECESSITY_SCORES,
-)
+from .constants import CATEGORY_MULTIPLIERS, LIFE_AREA_WEIGHTS, NECESSITY_SCORES
 
 
 class PurchaseData(TypedDict):
@@ -69,7 +65,9 @@ def calculate_utilities(purchase_data: PurchaseData) -> UtilityMetrics:
     # Average life area weights if multiple areas are affected
     life_area_mult = 1.0
     if life_areas:
-        life_area_mult = sum(LIFE_AREA_WEIGHTS.get(area, 1.0) for area in life_areas) / len(life_areas)
+        life_area_mult = sum(
+            LIFE_AREA_WEIGHTS.get(area, 1.0) for area in life_areas
+        ) / len(life_areas)
 
     # Calculate benefit with quality multipliers
     benefit = total_time_use * category_mult * necessity_mult * life_area_mult
@@ -100,3 +98,37 @@ def calculate_utilities(purchase_data: PurchaseData) -> UtilityMetrics:
         "u_not_buy_useful": U_not_buy_useful,
         "u_not_buy_not_useful": U_not_buy_not_useful,
     }
+
+
+def calculate_expected_utility_buy(
+    p_useful_if_buy: float, results: UtilityMetrics
+) -> float:
+    return (
+        p_useful_if_buy * results["u_buy_useful"]
+        + (1 - p_useful_if_buy) * results["u_buy_not_useful"]
+    )
+
+
+def calculate_expected_utility_not_buy(
+    p_useful_if_not_buy: float, results: UtilityMetrics
+) -> float:
+
+    return (
+        p_useful_if_not_buy * results["u_not_buy_useful"]
+        + (1 - p_useful_if_not_buy) * results["u_not_buy_not_useful"]
+    )
+
+
+def calculate_breakeven_probability(
+    results: UtilityMetrics, p_useful_if_not_buy: float
+) -> float:
+    eu_not_buy = calculate_expected_utility_not_buy(p_useful_if_not_buy, results)
+
+    numerator = eu_not_buy - results["u_buy_not_useful"]
+    denominator = results["u_buy_useful"] - results["u_buy_not_useful"]
+
+    if denominator == 0:
+        return 0.5  # Neutral case
+
+    breakeven = numerator / denominator
+    return max(0.0, min(1.0, breakeven))  # Clamp to [0, 1]
