@@ -61,7 +61,7 @@ Footer {
 
 #welcome-panel {
     border: thick $secondary;
-    border-title-align: left;
+    border-title-align: center;
     border-title-color: $accent;
     border-title-style: bold underline;
     background: $surface;
@@ -195,7 +195,7 @@ Button {
 }
 
 Button.-primary {
-    background: $accent;
+    background: $primary-darken-2;
     color: $text;
     border: tall $accent-lighten-1;
 }
