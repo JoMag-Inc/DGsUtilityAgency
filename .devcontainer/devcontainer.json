@@ -1,0 +1,44 @@
+{
+    "name": "Default dev",
+    "image": "mcr.microsoft.com/devcontainers/python:3.14",
+    "customizations": {
+      "codespaces": {
+        "openFiles": [
+          "README.md"
+        ]
+      },
+      "vscode": {
+        "extensions": [
+          "ms-python.python",
+          "GitHub.copilot",
+          "redhat.vscode-yaml",
+          "charliermarsh.ruff",
+          "ms-python.mypy-type-checker",
+          "njpwerner.autodocstring",
+          "ms-vsliveshare.vsliveshare"
+        ],
+        "settings": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnPaste": false,
+          "editor.formatOnSave": true,
+          "editor.formatOnType": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": true
+          },
+          "files.trimTrailingWhitespace": true,
+          "yaml.customTags": [
+            "!input scalar",
+            "!secret scalar",
+            "!include_dir_named scalar",
+            "!include_dir_list scalar",
+            "!include_dir_merge_list scalar",
+            "!include_dir_merge_named scalar"
+          ]
+        }
+      }
+    },
+    "hostRequirements": {
+      "cpus": 2
+    },
+    "postCreateCommand": "./.devcontainer/post-create.sh"
+  }
