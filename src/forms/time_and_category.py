@@ -14,7 +14,7 @@ class TimeAndCategoryScreen(Screen):
         )
         self.query_one("#time_and_usage", Vertical).border_title = "Time and Usage"
         self.query_one("#hours_pr_week", Input).border_title = (
-            "Estiamted hours per week of use"
+            "Estimated hours per week of use"
         )
         self.query_one("#use_probability", RadioSet).border_title = (
             "How probable is it to meet the hours per week estimate?"
