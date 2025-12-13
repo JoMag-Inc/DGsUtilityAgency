@@ -8,3 +8,7 @@ dependencies = [
     "rich>=14.2.0",
     "textual>=6.6.0",
 ]
+[project.optional-dependencies]
+build = [
+  "pyinstaller>=6.17",
+]
