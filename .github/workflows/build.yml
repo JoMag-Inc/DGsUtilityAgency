@@ -2,6 +2,7 @@ name: Build executables
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
@@ -38,7 +39,7 @@ jobs:
       - name: Build executable
         run: |
           uv run pyinstaller --noconfirm --onefile \
-            --name DGsUtilityAgency \
+            --name DGsUtilityAgency-${{ runner.os }} \
             --add-data "$ADD_DATA" \
             main.py
         shell: bash
@@ -51,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: DGsUtilityAgency-${{ runner.os }}
-          path: dist/DGsUtilityAgency${{ env.EXE_EXT }}
+          path: dist/DGsUtilityAgency-${{ runner.os }}${{ env.EXE_EXT }}
           if-no-files-found: error

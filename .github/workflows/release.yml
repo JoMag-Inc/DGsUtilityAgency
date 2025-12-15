@@ -1,0 +1,32 @@
+name: Add assets to release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  add-assets:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: DGsUtilityAgency-*
+          path: artifacts
+
+      - name: Add assets to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+          BASE: artifacts/DGsUtilityAgency-
+        run: |
+          gh release upload "${TAG_NAME}" "${BASE}-Windows/DGsUtilityAgency-Windows.exe#DGsUtilityAgency-Windows-${TAG_NAME}.exe"
+          gh release upload "${TAG_NAME}" "${BASE}-Linux/DGsUtilityAgency-Linux"#DGsUtilityAgency-Linux-${TAG_NAME}
+          gh release upload "${TAG_NAME}" "${BASE}-macOS/DGsUtilityAgency-macOS"#DGsUtilityAgency-macOS-${TAG_NAME}
