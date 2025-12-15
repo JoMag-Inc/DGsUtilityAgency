@@ -25,7 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
-          BASE: artifacts/DGsUtilityAgency-
+          BASE: artifacts/DGsUtilityAgency
         run: |
           gh release upload "${TAG_NAME}" "${BASE}-Windows/DGsUtilityAgency-Windows.exe#DGsUtilityAgency-Windows-${TAG_NAME}.exe"
           gh release upload "${TAG_NAME}" "${BASE}-Linux/DGsUtilityAgency-Linux"#DGsUtilityAgency-Linux-${TAG_NAME}
