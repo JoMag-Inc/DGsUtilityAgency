@@ -1,0 +1,25 @@
+name: Add assets to release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  add-assets:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: DGsUtilityAgency-*
+      
+      - name: Add assets to release
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} ./DGsUtilityAgency-*
