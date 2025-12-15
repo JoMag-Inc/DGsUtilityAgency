@@ -21,17 +21,11 @@ jobs:
           pattern: DGsUtilityAgency-*
           path: artifacts
 
-      - name: Debug
-        run: |
-          ls
-          cd artifacts
-          ls
-
       - name: Add assets to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
-          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-Windows
-          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-Linux
-          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-macOS
+          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-Windows/DGsUtilityAgency.exe
+          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-Linux/DGsUtilityAgency
+          gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-macOS/DGsUtilityAgency
