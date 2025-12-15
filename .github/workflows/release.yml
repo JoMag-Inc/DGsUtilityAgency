@@ -24,6 +24,7 @@ jobs:
 
       - name: Add assets to release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           gh release upload "${TAG_NAME}" artifacts/DGsUtilityAgency-*
