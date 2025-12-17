@@ -7,7 +7,18 @@ and calculates various utility metrics to help users make informed purchase deci
 
 from typing import TypedDict
 
-from .constants import CATEGORY_MULTIPLIERS, LIFE_AREA_WEIGHTS, NECESSITY_SCORES
+from .constants import (
+    CATEGORY_MULTIPLIERS,
+    DEFAULT_BREAKEVEN_PROBABILITY,
+    DEFAULT_INCOME_WEIGHTS,
+    DEFAULT_USE_FACTOR_ZERO_PRICE,
+    INCOME_WEIGHTS,
+    LIFE_AREA_WEIGHTS,
+    MONTHS_PER_YEAR,
+    NECESSITY_SCORES,
+    USE_PROBABILITY_VALUES,
+    WEEKS_PER_YEAR,
+)
 
 
 class PurchaseData(TypedDict):
@@ -45,17 +56,11 @@ def calculate_utilities(purchase_data: PurchaseData) -> UtilityMetrics:
     category = purchase_data["category"]
 
     # probability determination
-    prob = 1
-    if use_probability == "low":
-        prob = 0.3
-    elif use_probability == "medium":
-        prob = 0.6
-    elif use_probability == "high":
-        prob = 0.9
+    prob = USE_PROBABILITY_VALUES.get(use_probability, 1)
 
     # time calculations
-    time_use_year = time_use * 52
-    life_span_years = life_span / 12
+    time_use_year = time_use * WEEKS_PER_YEAR
+    life_span_years = life_span / MONTHS_PER_YEAR
     total_time_use = time_use_year * life_span_years * prob
 
     # Calculate quality multipliers from constants
@@ -72,18 +77,11 @@ def calculate_utilities(purchase_data: PurchaseData) -> UtilityMetrics:
     # Calculate benefit with quality multipliers
     benefit = total_time_use * category_mult * necessity_mult * life_area_mult
 
-    income_weights = {"buy": [1, 1], "not_buy": [1, 1]}
-    if income_level == "low":
-        income_weights["buy"] = [2, -8]
-        income_weights["not_buy"] = [-1, 0]
-    elif income_level == "medium":
-        income_weights["buy"] = [2, -3]
-        income_weights["not_buy"] = [-4, 2]
-    elif income_level == "high":
-        income_weights["buy"] = [4, -1]
-        income_weights["not_buy"] = [-8, 1]
+    income_weights = INCOME_WEIGHTS.get(income_level, DEFAULT_INCOME_WEIGHTS)
     # Calculate use_factor (hours per dollar spent)
-    use_factor = total_time_use / price if price > 0 else 0.1
+    use_factor = (
+        total_time_use / price if price > 0 else DEFAULT_USE_FACTOR_ZERO_PRICE
+    )
 
     benefit_factor = benefit / price
 
@@ -130,7 +128,7 @@ def calculate_breakeven_probability(
     denominator = results["u_buy_useful"] - results["u_buy_not_useful"]
 
     if denominator == 0:
-        return 0.5  # Neutral case
+        return DEFAULT_BREAKEVEN_PROBABILITY  # Neutral case
 
     breakeven = numerator / denominator
     return max(0.0, min(1.0, breakeven))  # Clamp to [0, 1]
