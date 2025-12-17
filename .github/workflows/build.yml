@@ -1,0 +1,56 @@
+name: Build executables
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install build dependencies
+        run: uv sync --extra build
+
+      - name: Configure PyInstaller data paths
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            echo "ADD_DATA=src/application/dgutility.css;src/application" >> $GITHUB_ENV
+            echo "EXE_EXT=.exe" >> $GITHUB_ENV
+          else
+            echo "ADD_DATA=src/application/dgutility.css:src/application" >> $GITHUB_ENV
+            echo "EXE_EXT=" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Build executable
+        run: |
+          uv run pyinstaller --noconfirm --onefile \
+            --name DGsUtilityAgency-${{ runner.os }} \
+            --add-data "$ADD_DATA" \
+            main.py
+        shell: bash
+
+      # Placeholder for future signing/notarization steps per OS
+      # - name: Sign executable
+      #   run: echo "TODO: add platform-specific signing"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: DGsUtilityAgency-${{ runner.os }}
+          path: dist/DGsUtilityAgency-${{ runner.os }}${{ env.EXE_EXT }}
+          if-no-files-found: error
